@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: iris-classifier-svc
+spec:
+  type: NodePort
+  selector:
+    app: iris-classifier
+  ports:
+    - port: 8000
+      targetPort: 8000
+      nodePort: 30080   # fixed so the ELB target group can point at it reliably
