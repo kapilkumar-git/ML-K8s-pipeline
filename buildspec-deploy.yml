@@ -1,0 +1,41 @@
+version: 0.2
+
+env:
+  variables:
+    KUBECONFIG_SECRET_NAME: "k3s-demo-kubeconfig"
+
+phases:
+  install:
+    commands:
+      - echo "Installing kubectl..."
+      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      - chmod +x kubectl
+      - mv kubectl /usr/local/bin/kubectl
+      - kubectl version --client
+
+  pre_build:
+    commands:
+      - echo "Fetching kubeconfig from Secrets Manager..."
+      - aws secretsmanager get-secret-value --secret-id ${KUBECONFIG_SECRET_NAME} --query SecretString --output text > kubeconfig.yaml
+      - export KUBECONFIG=$(pwd)/kubeconfig.yaml
+      - echo "Reading image details from build stage..."
+      - IMAGE_URI=$(python3 -c "import json;print(json.load(open('image-details.json'))['ECR_URI'])")
+      - IMAGE_TAG=$(python3 -c "import json;print(json.load(open('image-details.json'))['IMAGE_TAG'])")
+      - echo "Deploying image ${IMAGE_URI}:${IMAGE_TAG}"
+
+  build:
+    commands:
+      - echo "Substituting image URI into deployment manifest..."
+      - sed -i "s|<ECR_IMAGE_URI>:<TAG>|${IMAGE_URI}:${IMAGE_TAG}|g" k8s/deployment.yaml
+      - cat k8s/deployment.yaml
+      - echo "Applying manifests to the cluster..."
+      - kubectl apply -f k8s/deployment.yaml
+      - kubectl apply -f k8s/service.yaml
+      - echo "Waiting for rollout..."
+      - kubectl rollout status deployment/iris-classifier --timeout=120s
+
+  post_build:
+    commands:
+      - kubectl get pods -o wide
+      - kubectl get svc iris-classifier-svc
+      - rm -f kubeconfig.yaml
