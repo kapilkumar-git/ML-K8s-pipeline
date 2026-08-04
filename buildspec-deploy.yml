@@ -3,14 +3,14 @@ version: 0.2
 env:
   variables:
     KUBECONFIG_SECRET_NAME: "k3s-demo-kubeconfig"
+    TOOLS_BUCKET: "iris-classifier-tools-<ACCOUNT_ID>"
 
 phases:
   install:
     commands:
-      - echo "Installing kubectl..."
-      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-      - chmod +x kubectl
-      - mv kubectl /usr/local/bin/kubectl
+      - echo "Installing kubectl from S3 (no internet access inside this VPC config)..."
+      - aws s3 cp s3://${TOOLS_BUCKET}/kubectl /usr/local/bin/kubectl
+      - chmod +x /usr/local/bin/kubectl
       - kubectl version --client
 
   pre_build:
