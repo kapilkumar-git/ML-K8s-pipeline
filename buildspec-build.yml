@@ -31,4 +31,5 @@ phases:
 artifacts:
   files:
     - image-details.json
+    - buildspec-deploy.yml
     - k8s/**/*
