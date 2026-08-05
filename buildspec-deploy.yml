@@ -2,8 +2,8 @@ version: 0.2
 
 env:
   variables:
-    KUBECONFIG_SECRET_NAME: "k3s-demo-kubeconfig"
-    TOOLS_BUCKET: "iris-classifier-tools-<ACCOUNT_ID>"
+    KUBECONFIG_SECRET_NAME: "k3s-demo-kubeconfig-new"
+    TOOLS_BUCKET: "iris-classifier-tools-261536137188"
 
 phases:
   install:

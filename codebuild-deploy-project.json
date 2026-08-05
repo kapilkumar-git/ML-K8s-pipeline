@@ -6,7 +6,7 @@
     "buildspec": "buildspec-deploy.yml"
   },
   "artifacts": {
-    "type": "NO_ARTIFACTS"
+    "type": "CODEPIPELINE"
   },
   "environment": {
     "type": "LINUX_CONTAINER",

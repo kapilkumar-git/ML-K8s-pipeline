@@ -20,7 +20,7 @@
             },
             "runOrder": 1,
             "configuration": {
-              "ConnectionArn": "arn:aws:codeconnections:us-east-1:261536137188:connection/12345678-1234-1234-1234-123456789012",
+              "ConnectionArn": "arn:aws:codeconnections:eu-west-1:261536137188:connection/9927cd00-2e8a-4184-9a40-9446e0033890",
               "FullRepositoryId": "kapilkumar-git/ML-K8s-pipeline",
               "BranchName": "main",
               "OutputArtifactFormat": "CODE_ZIP"
