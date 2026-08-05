@@ -1,0 +1,21 @@
+{
+  "name": "iris-classifier-build",
+  "description": "Builds the iris classifier Docker image and pushes to ECR",
+  "source": {
+    "type": "GITHUB",
+    "location": "https://github.com/kapilkumar-git/ML-K8s-pipeline.git",
+    "buildspec": "buildspec-build.yml",
+    "gitCloneDepth": 1
+  },
+  "artifacts": {
+    "type": "NO_ARTIFACTS"
+  },
+  "environment": {
+    "type": "LINUX_CONTAINER",
+    "image": "aws/codebuild/amazonlinux2-x86_64-standard:5.0",
+    "computeType": "BUILD_GENERAL1_SMALL",
+    "privilegedMode": true
+  },
+  "serviceRole": "arn:aws:iam::<ACCOUNT_ID>:role/codebuild-iris-classifier-build-role",
+  "timeoutInMinutes": 15
+}

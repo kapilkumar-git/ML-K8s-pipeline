@@ -1,0 +1,81 @@
+{
+  "pipeline": {
+    "name": "iris-classifier-pipeline",
+    "roleArn": "arn:aws:iam::261536137188:role/codepipeline-iris-classifier-role",
+    "artifactStore": {
+      "type": "S3",
+      "location": "iris-classifier-pipeline-artifacts-261536137188"
+    },
+    "stages": [
+      {
+        "name": "Source",
+        "actions": [
+          {
+            "name": "GitHub_Source",
+            "actionTypeId": {
+              "category": "Source",
+              "owner": "AWS",
+              "provider": "CodeStarSourceConnection",
+              "version": "1"
+            },
+            "runOrder": 1,
+            "configuration": {
+              "ConnectionArn": "arn:aws:codeconnections:us-east-1:261536137188:connection/12345678-1234-1234-1234-123456789012",
+              "FullRepositoryId": "kapilkumar-git/ML-K8s-pipeline",
+              "BranchName": "main",
+              "OutputArtifactFormat": "CODE_ZIP"
+            },
+            "outputArtifacts": [
+              { "name": "SourceOutput" }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Build",
+        "actions": [
+          {
+            "name": "Build_And_Push_Image",
+            "actionTypeId": {
+              "category": "Build",
+              "owner": "AWS",
+              "provider": "CodeBuild",
+              "version": "1"
+            },
+            "runOrder": 1,
+            "configuration": {
+              "ProjectName": "iris-classifier-build"
+            },
+            "inputArtifacts": [
+              { "name": "SourceOutput" }
+            ],
+            "outputArtifacts": [
+              { "name": "BuildOutput" }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Deploy",
+        "actions": [
+          {
+            "name": "Deploy_To_K3s",
+            "actionTypeId": {
+              "category": "Build",
+              "owner": "AWS",
+              "provider": "CodeBuild",
+              "version": "1"
+            },
+            "runOrder": 1,
+            "configuration": {
+              "ProjectName": "iris-classifier-deploy"
+            },
+            "inputArtifacts": [
+              { "name": "BuildOutput" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
