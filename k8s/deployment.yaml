@@ -14,6 +14,8 @@ spec:
       labels:
         app: iris-classifier
     spec:
+      imagePullSecrets:
+        - name: ecr-registry-secret
       containers:
         - name: iris-classifier
           image: <ECR_IMAGE_URI>:<TAG>   # replaced by CodeBuild at deploy time
